@@ -24,7 +24,7 @@ jobs:
 
   build-and-push:
     name: Build and push Docker image
-    needs: [test, java-test]
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -50,28 +50,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/tmnt-node-ci:latest
             ghcr.io/${{ github.repository_owner }}/tmnt-node-ci:${{ github.sha }}
 
-  java-test:
-    name: Run Java (Maven) unit tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
-      - name: Run Maven tests
-        working-directory: spiderManWikiApiV2-master
-        run: |
-          chmod +x mvnw || true
-          ./mvnw -B test
+  # java-test job removed — this repository is Node.js only
 
   deploy:
     name: Deploy to remote host
