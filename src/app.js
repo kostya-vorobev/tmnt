@@ -1,7 +1,17 @@
-const turtles = require("./turtles");
+const express = require('express');
+const turtles = require('./turtles');
 
-console.log("Teenage Mutant Ninja Turtles:");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-turtles.forEach(turtle => {
-    console.log(turtle);
+app.get('/', (req, res) => {
+    res.send('Teenage Mutant Ninja Turtles API');
+});
+
+app.get('/turtles', (req, res) => {
+    res.json(turtles);
+});
+
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });
