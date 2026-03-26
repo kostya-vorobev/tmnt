@@ -1,7 +1,7 @@
 const turtles = require("../src/turtles");
 
 function testTurtlesCount() {
-    if (turtles.length !== 4) {
+    if (turtles.length !== 5) {
         throw new Error("Test failed: incorrect number of turtles");
     }
 }
