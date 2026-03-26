@@ -52,25 +52,11 @@ jobs:
   deploy:
     name: Deploy to remote host
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Wait for image availability
-        run: echo "Image pushed; starting deploy step"
-      - name: Install SSH client
-        run: sudo apt-get update && sudo apt-get install -y openssh-client
-      - name: Configure SSH key
-        uses: webfactory/ssh-agent@v0.8.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Deploy via SSH
-        env:
-          IMAGE: ghcr.io/${{ github.repository_owner }}/tmnt-node-ci:latest
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      - uses: actions/checkout@v4
+      - name: Deploy locally with docker-compose
         run: |
-          ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST} \
-            "docker pull ${IMAGE} && \
-             docker stop tmnt || true && \
-             docker rm tmnt || true && \
-             docker run -d --name tmnt -p 3000:3000 --restart always ${IMAGE}"
+          docker-compose pull
+          docker-compose up -d --build
