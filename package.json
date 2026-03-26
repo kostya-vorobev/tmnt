@@ -7,6 +7,9 @@
     "start": "node src/app.js",
     "test": "node tests/turtles.test.js"
   },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
   "author": "student",
   "license": "ISC"
 }
