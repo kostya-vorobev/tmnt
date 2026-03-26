@@ -57,8 +57,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy locally (Linux/macOS runners)
-        if: runner.os != 'Windows'
+
+      - name: Deploy locally
         shell: bash
         run: |
           docker version
@@ -70,17 +70,3 @@ jobs:
           $DC down --remove-orphans || true
           $DC pull || true
           $DC up -d --build --remove-orphans
-
-      - name: Deploy locally (Windows runner)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          docker version
-          if (Get-Command docker-compose -ErrorAction SilentlyContinue) {
-            $DC = 'docker-compose'
-          } else {
-            $DC = 'docker compose'
-          }
-          & $DC down --remove-orphans || Write-Host 'down failed'
-          & $DC pull || Write-Host 'pull failed'
-          & $DC up -d --build --remove-orphans
