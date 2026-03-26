@@ -2,9 +2,10 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
+  workflow_dispatch: {}
 
 jobs:
   test:
@@ -53,7 +54,7 @@ jobs:
     name: Deploy to remote host
     needs: build-and-push
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
       - name: Deploy locally with docker-compose
