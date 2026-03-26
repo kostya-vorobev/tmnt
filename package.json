@@ -1,0 +1,12 @@
+{
+  "name": "tmnt-node-ci",
+  "version": "1.0.0",
+  "description": "Teenage Mutant Ninja Turtles Node.js CI/CD demo project",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "node tests/turtles.test.js"
+  },
+  "author": "student",
+  "license": "ISC"
+}

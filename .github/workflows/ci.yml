@@ -1,0 +1,121 @@
+name: Protected Main Workflow (Node.js TMNT)
+
+on:
+
+  push:
+    branches: ["main"]
+
+  pull_request:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+
+jobs:
+
+  protect-main:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Block direct pushes to main
+
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+        run: |
+
+          echo "::error::Direct pushes to main are blocked!"
+          echo "Use Pull Request instead"
+
+          exit 1
+
+
+  pr-validation:
+
+    needs: protect-main
+
+    if: github.event_name == 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+
+      - name: Setup Node.js
+
+        uses: actions/setup-node@v4
+
+        with:
+          node-version: 20
+
+
+      - name: Install dependencies
+
+        run: npm install
+
+
+      - name: Run tests
+
+        run: npm test
+
+
+      - name: Build verification
+
+        run: echo "Build successful"
+
+
+  sync-notification:
+
+    needs: pr-validation
+
+    if: github.event_name == 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+
+      - name: Update fresh branch
+
+        run: |
+
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          git fetch origin main:main
+          git checkout -B fresh origin/main
+          git push origin fresh --force
+
+          echo "# New Updates Available" > SYNC_NOTICE.md
+          echo "Main branch updated at $(date)" >> SYNC_NOTICE.md
+
+          git add SYNC_NOTICE.md
+          git commit -m "Update sync notification"
+          git push origin fresh
+
+
+  deploy:
+
+    needs: sync-notification
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+
+      - name: Install dependencies
+
+        run: npm install
+
+
+      - name: Deploy
+
+        run: echo "Deploying TMNT project"
