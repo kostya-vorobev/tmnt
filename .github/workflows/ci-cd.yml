@@ -57,23 +57,30 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy locally with docker-compose
+      - name: Deploy locally (Linux/macOS runners)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
-          # ensure docker is available
           docker version
-
-          # choose compose command (compatibility)
           if command -v docker-compose >/dev/null 2>&1; then
             DC="docker-compose"
           else
             DC="docker compose"
           fi
-
-          # stop and remove previous containers to free ports
           $DC down --remove-orphans || true
-
-          # try pulling images (if using registry) and rebuild local image
           $DC pull || true
-
-          # start services
           $DC up -d --build --remove-orphans
+
+      - name: Deploy locally (Windows runner)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          docker version
+          if (Get-Command docker-compose -ErrorAction SilentlyContinue) {
+            $DC = 'docker-compose'
+          } else {
+            $DC = 'docker compose'
+          }
+          & $DC down --remove-orphans || Write-Host 'down failed'
+          & $DC pull || Write-Host 'pull failed'
+          & $DC up -d --build --remove-orphans
