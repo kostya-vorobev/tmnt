@@ -8,8 +8,8 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  test:
-    name: Run tests
+  unit-tests:
+    name: Run unit tests (Node.js)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +19,12 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm install
-      - name: Run tests
-        run: npm test
+      - name: Run unit tests from `tests` folder
+        run: node tests/turtles.test.js
 
   build-and-push:
     name: Build and push Docker image
-    needs: test
+    needs: unit-tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
