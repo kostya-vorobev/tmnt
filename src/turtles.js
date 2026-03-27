@@ -1,10 +1,7 @@
-// Export an array of 50 turtle names (including Leonardo)
 const turtles = [];
 
-// Ensure Leonardo is present
 turtles.push("Leonardo");
 
-// Add other named turtles and fill up to 50 entries
 const baseNames = [
     "Raphael",
     "Donatello",
