@@ -50,8 +50,6 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/tmnt-node-ci:latest
             ghcr.io/${{ github.repository_owner }}/tmnt-node-ci:${{ github.sha }}
 
-  # java-test job removed — this repository is Node.js only
-
   deploy:
     name: Deploy to remote host
     needs: build-and-push

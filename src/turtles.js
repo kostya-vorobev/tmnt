@@ -26,7 +26,7 @@ const baseNames = [
 ];
 
 let idx = 0;
-while (turtles.length < 50) {
+while (turtles.length < 5) {
     const name = baseNames[idx % baseNames.length] + (Math.floor(idx / baseNames.length) === 0 ? "" : " " + (Math.floor(idx / baseNames.length) + 1));
     if (!turtles.includes(name)) {
         turtles.push(name);
