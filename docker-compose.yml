@@ -3,8 +3,8 @@ version: '3.8'
 services:
   tmnt:
     build: .
-    image: 
-    
+    image: tmnt-node-ci:latest
+    container_name: tmnt
     ports:
       - "3000:3000"
     restart: always
